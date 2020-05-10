@@ -2,13 +2,13 @@ default: &default
   adapter: postgresql
   encoding: utf8
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
-  username: <%= ENV.fetch('DATABASE_USER', 'postgres') %>
-  password: <%= ENV.fetch('DATABASE_PASSWORD', 'password') %>
-  host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
 
 development:
   <<: *default
   port: 5434
+  username: postgres
+  password: password
+  host: 127.0.0.1
   database: bet_conductor_development
 
 test:
@@ -17,4 +17,4 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV.fetch('DATABASE_NAME') %>
+  url: <%= ENV.fetch('DATABASE_URL') %>
