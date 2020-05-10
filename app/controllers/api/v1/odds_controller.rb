@@ -6,15 +6,11 @@ class Api::V1::OddsController < Api::V1::ApplicationController
       if race.present? && race.horses.present?
         @horses = race.horses
 
-        begin
-          body = JSON.parse(request.body.read)
-          if body['odds'].values.sum <= 1.0
+        body = JSON.parse(request.body.read)
+        if body['odds'].values.sum <= 1.0
 
-            render json: bets(race, body['odds'], body['budget']).to_json
-          else
-            render json: {error: true, message: 'データ形式が無効です。'}
-          end
-        rescue
+          render json: bets(race, body['odds'], body['budget']).to_json
+        else
           render json: {error: true, message: 'データ形式が無効です。'}
         end
       else
@@ -52,12 +48,12 @@ class Api::V1::OddsController < Api::V1::ApplicationController
           bet = bets[numbers]
           bets[numbers] = {
               count: b + bet[:count],
-              value: (b * odds.find_by(first_horse_id: horse_number, second_horse_id: a).quinella * 100).round(0) + bet[:value]
+              value: (b * odds.find_by(first_horse_number: horse_number, second_horse_number: a).quinella * 100).round(0) + bet[:value]
           }
         else
           bets[numbers] = {
               count: b,
-              value: (b * odds.find_by(first_horse_id: horse_number, second_horse_id: a).quinella * 100).round(0)
+              value: (b * odds.find_by(first_horse_number: horse_number, second_horse_number: a).quinella * 100).round(0)
           }
         end
       end
