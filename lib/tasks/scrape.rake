@@ -54,7 +54,7 @@ namespace :scrape do
     date = args['date']
 
     if date.present?
-      Race.where(date: date, place: '東京', number: 11).each do |race|
+      Race.where(date: date).each do |race|
         url = File.join(URL, 'odds/tfw', race.url.split('/').last, '/')
         html = open(url).read
         doc = Nokogiri::HTML.parse(html.toutf8, nil, 'utf-8')
@@ -112,7 +112,7 @@ namespace :scrape do
     date = args['date']
 
     if date.present?
-      Race.where(date: date, place: '東京', number: 11).each do |race|
+      Race.where(date: date).each do |race|
         url = File.join(URL, 'odds/ur', race.url.split('/').last, '/')
         html = open(url).read
         doc = Nokogiri::HTML.parse(html.toutf8, nil, 'utf-8')
@@ -155,7 +155,7 @@ namespace :scrape do
     date = args['date']
 
     if date.present?
-      Race.where(date: date, place: '東京', number: 11).each do |race|
+      Race.where(date: date).each do |race|
         url = File.join(URL, 'odds/wide', race.url.split('/').last, '/')
         html = open(url).read
         doc = Nokogiri::HTML.parse(html.toutf8, nil, 'utf-8')
@@ -198,7 +198,7 @@ namespace :scrape do
     date = args['date']
 
     if date.present?
-      Race.where(date: date, place: '東京', number: 11).each do |race|
+      Race.where(date: date).each do |race|
         url = File.join(URL, 'odds/ut', race.url.split('/').last, '/')
         html = open(url).read
         doc = Nokogiri::HTML.parse(html.toutf8, nil, 'utf-8')
