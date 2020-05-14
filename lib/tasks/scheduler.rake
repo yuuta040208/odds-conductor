@@ -1,30 +1,29 @@
 desc "This task is called by the Heroku scheduler add-on"
 task :scheduler => :environment do
-  today = Date.today.strftime('%Y%m%d').to_i
-  races = Race.where(date: today)
+  today = Date.today.strftime('%m%d').to_i
+  time = Time.now + 9 * 60 * 60
+  now = time.strftime("%H%M")
+  wday = time.wday
 
-  if races.blank?
-    Rake::Task['scrape:races'].invoke
-
+  if [0, 6].include?(wday) && now.to_i > 800
     races = Race.where(date: today)
-    if races.present?
-      nankan_race_id = races.first.nankan_race_id.chop.chop
 
-      Rake::Task['scrape:race_detail'].invoke(nankan_race_id)
-      Rake::Task['scrape:horses'].invoke(nankan_race_id)
+    if races.blank?
+      Rake::Task['scrape:races'].invoke(today)
+
+      races = Race.where(date: today)
+      if races.present?
+        Rake::Task['scrape:horses'].invoke(today)
+        Rake::Task['scrape:quinella'].invoke(today)
+        Rake::Task['scrape:quinella_place'].invoke(today)
+        Rake::Task['scrape:exacta'].invoke(today)
+      else
+        puts '実行するスクリプトはありません'
+      end
     else
       puts '実行するスクリプトはありません'
     end
   else
-    nankan_race_list_id = races.first.nankan_race_id.chop.chop
-
-    last_race = races.order(start_time: :desc).take
-    now = (Time.now + 9 * 60 * 60).strftime('%H%M').to_i
-
-    if now < last_race.start_time && 1000 < now
-      Rake::Task['scrape:odds'].invoke(nankan_race_list_id)
-    else
-      puts '実行するスクリプトはありません'
-    end
+    puts '実行するスクリプトはありません'
   end
 end
